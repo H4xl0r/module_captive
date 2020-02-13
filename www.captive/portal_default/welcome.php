@@ -81,34 +81,17 @@ if( $ip != "" and $mac != "" ) {
     $ip = htmlentities($ip);
     $mac = strtoupper(htmlentities($mac));
     
-    if ($mod_captive_block == "ALL") { // EXPERIMENTAL [OLD METHOD]
-        $exec = "$bin_iptables -I internet 1 -t mangle -m mac --mac-source $mac -j RETURN";
-        exec_fruitywifi($exec);
-     
-        $exec = "includes/rmtrack " . $ip;
-        exec_fruitywifi($exec);
-        sleep(1); // allowing rmtrack to be executed
-    } else if ($mod_captive_block == "80" or $mod_captive_block == "open") { // EXPERIMENTAL
-		for ($i=0; $i < 5; $i++) {
-			$exec = "$bin_iptables -t nat -D PREROUTING -p tcp -m mac --mac-source $mac --dport 80 -j DNAT --to-destination $io_in_ip:80";
-			//$exec = "$bin_iptables -t nat -D PREROUTING -p tcp -m mac --mac-source $mac --dport 80 -j DNAT --to-destination $io_in_ip";
-			exec_fruitywifi($exec);
-			$exec = "$bin_iptables -t nat -D PREROUTING -p tcp -m mac --mac-source $mac --dport 443 -j DNAT --to-destination $io_in_ip:443";
-			exec_fruitywifi($exec);
-		}
-        sleep(1);
-	} else if ($mod_captive_block == "close") { // DEFAULT AND ONLY METHOD ENABLED
-		$exec = "iptables -t nat -A PREROUTING -p tcp -m mac --mac-source $mac -j MARK --set-mark 99";
-		exec_fruitywifi($exec);
-		
-		$exec = "iptables -t nat -D PREROUTING -i $io_in_iface -p tcp -m mark ! --mark 99 -m tcp -m multiport --dports 80,443 -j DNAT --to-destination $io_in_ip";
-		exec_fruitywifi($exec);
-		
-		$exec = "iptables -t nat -A PREROUTING -i $io_in_iface -p tcp -m mark ! --mark 99 -m tcp -m multiport --dports 80,443 -j DNAT --to-destination $io_in_ip";
-		exec_fruitywifi($exec);
-		
-        sleep(1);
-    }
+    $exec = "iptables -t nat -A PREROUTING -p tcp -m mac --mac-source $mac -j MARK --set-mark 99";
+    exec_fruitywifi($exec);
+
+    $exec = "iptables -t nat -D PREROUTING -i $io_in_iface -p tcp -m mark ! --mark 99 -m tcp -m multiport --dports 80,443 -j DNAT --to-destination $io_in_ip:80";
+    exec_fruitywifi($exec);
+
+    $exec = "iptables -t nat -A PREROUTING -i $io_in_iface -p tcp -m mark ! --mark 99 -m tcp -m multiport --dports 80,443 -j DNAT --to-destination $io_in_ip:80";
+    exec_fruitywifi($exec);
+
+    sleep(1);
+    
     // OK, redirection bypassed.
     // Show the logged in message or directly redirect to other website
 
@@ -118,7 +101,6 @@ if( $ip != "" and $mac != "" ) {
     
     // ADD TO LOGS
 	$exec = "$bin_echo '".date("Y-m-d h:i:s")."|$mac|$ip|".basename($_SERVER['PHP_SELF'])."|$user|$pass|[NEW]' >> $mod_logs ";
-    //$exec = "$bin_echo 'NEW: $user|$pass|$ip|$mac|".date("Y-m-d h:i:s")."' >> $mod_logs ";
     exec_fruitywifi($exec);
 
 } else {
