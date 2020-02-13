@@ -139,7 +139,7 @@ if($service == "captive") {
         }
         
         # SET ISUP
-        $exec = "$bin_sed -i 's/^\\\$mod_captive_block=.*/\\\$mod_captive_block= \"open\";/g' ../_info_.php";
+			$exec = "$bin_sed -i 's/^\\\$mod_captive_block=.*/\\\$mod_captive_block= \\\"open\\\";/g' ../_info_.php";
         exec_fruitywifi($exec);
    }
 }
@@ -165,26 +165,13 @@ if ($service == "users" and $mac != "") {
 		// ADD TO LOGS
 		$exec = "$bin_echo 'DELETE: $mac|".date("Y-m-d h:i:s")."' >> $mod_logs ";
 		exec_fruitywifi($exec);
-	
     } 
     
     header('Location: ../index.php?tab=2');
     exit;
 }
 
-if ($install == "install_captive") {
-
-    $exec = "$bin_chmod 755 install.sh";
-    exec_fruitywifi($exec);
-
-    $exec = "$bin_sudo ./install.sh > $log_path/install.txt &";
-    exec_fruitywifi($exec);
-
-    header('Location: ../../install.php?module='.$mod_name);
-    exit;
-}
-
-if ($page == "status") {
+if($page == "status") {
     header('Location: ../../../action.php');
 } else {
     header('Location: ../../action.php?page='.$mod_name);
