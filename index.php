@@ -89,9 +89,9 @@ if ($logfile != "" and $action == "delete") {
         if (file_exists("/usr/share/fruitywifi/www/modules/nginx")) {
             $ismoduleup = exec_fruitywifi($mod_coisup);
                 if ($ismoduleup[0] != "") {
-                    echo "&nbsp;<a href='/modules/nginx' style='text-decoration: none;'> $mod_co </a><font color='lime'><b>enabled</b></font>.&nbsp; | <a href='/modules/nginx/includes/module_action.php?service=nginx&action=stop&page=module'><b>stop</b></a><br>";
+                    echo "&nbsp;&nbsp;&nbsp;<a href='/modules/nginx' style='text-decoration: none;'> $mod_co </a><font color='lime'><b>enabled</b></font>.&nbsp; | <a href='/modules/nginx/includes/module_action.php?service=nginx&action=stop&page=module'><b>stop</b></a><br>";
                 } else { 
-                    echo "&nbsp;<a href='/modules/nginx' style='text-decoration: none;'> $mod_co </a><font color='red'><b>disabled</b></font>. | <a href='/modules/nginx/includes/module_action.php?service=nginx&action=start&page=module'><b>start</b></a><br>"; 
+                    echo "&nbsp;&nbsp;&nbsp;<a href='/modules/nginx' style='text-decoration: none;'> $mod_co </a><font color='red'><b>disabled</b></font>. | <a href='/modules/nginx/includes/module_action.php?service=nginx&action=start&page=module'><b>start</b></a><br>"; 
                 }
             if(file_exists("/usr/share/fruitywifi/www/modules/nginx/includes/vhost-captive.conf")){
 		      if(file_exists("/usr/share/fruitywifi/www/modules/nginx/includes/vhost/vhost-captive.conf")){
